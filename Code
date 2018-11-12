@@ -1,0 +1,46 @@
+library(survival)
+library(survminer)
+library(flexsurv)
+library(dplyr)
+
+katrina <- read.csv("C:/Users/mdsau/OneDrive/Desktop/IAA/AA 502/Survival Analysis/Data/katrina.csv", 
+                    header = TRUE)
+katrina$ID <- 1:nrow(katrina)
+
+fit <- survreg(Surv(time = hour, event = reason %in% c(2, 3)) ~ backup + bridgecrane + servo + 
+                 trashrack + elevation + slope + age, data = katrina, dist = "weibull")
+summary(fit)
+
+fit2 <- coxph(Surv(time = hour, event = reason %in% c(2, 3)) ~ backup + bridgecrane + servo + 
+               trashrack + elevation + slope + age, data = katrina)
+summary(fit2)
+
+fit2_zph <- cox.zph(fit2, transform = "km")
+
+plot(fit2_zph, var = "backup")
+abline(h = 0, col = "red") # reference line at 0
+abline(h = fit2$coef["backup"], col = "purple", lty = 2, lwd = 2) # model estimate
+
+plot(fit2_zph, var = "bridgecrane")
+abline(h = 0, col = "red") # reference line at 0
+abline(h = fit2$coef["bridgecrane"], col = "purple", lty = 2, lwd = 2) # model estimate
+
+plot(fit2_zph, var = "servo")
+abline(h = 0, col = "red") # reference line at 0
+abline(h = fit2$coef["servo"], col = "purple", lty = 2, lwd = 2) # model estimate
+
+plot(fit2_zph, var = "trashrack")
+abline(h = 0, col = "red") # reference line at 0
+abline(h = fit2$coef["trashrack"], col = "purple", lty = 2, lwd = 2) # model estimate
+
+plot(fit2_zph, var = "elevation")
+abline(h = 0, col = "red") # reference line at 0
+abline(h = fit2$coef["elevation"], col = "purple", lty = 2, lwd = 2) # model estimate
+
+plot(fit2_zph, var = "slope")
+abline(h = 0, col = "red") # reference line at 0
+abline(h = fit2$coef["slope"], col = "purple", lty = 2, lwd = 2) # model estimate
+
+plot(fit2_zph, var = "age")
+abline(h = 0, col = "red") # reference line at 0
+abline(h = fit2$coef["age"], col = "purple", lty = 2, lwd = 2) # model estimate
